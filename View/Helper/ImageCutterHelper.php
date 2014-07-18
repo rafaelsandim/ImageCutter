@@ -4,9 +4,10 @@ App::uses('AppHelper', 'View/Helper');
 App::import('Vendor', 'ImageCutter.WideImage/WideImage');
 
 class ImageCutterHelper extends AppHelper {
-    
-    private $width;
-    private $height;
+
+    private $lorem = 'http://lorempixel.com/';
+    private $width = 100;
+    private $height = 100;
     private $crop = 'outside';
 
     private function __param($parameter) {
@@ -46,23 +47,38 @@ class ImageCutterHelper extends AppHelper {
     }
 
     //returns thumbs path if it exists, else generate a new thumb according parameters.
-    public function url($url=null, $full=false) {
+    //nothing is returned when the path doesn't exists
+    public function url($url = NULL, $full = false) {
+
         list($url, $width, $height, $crop) = $this->__param(func_get_args());
 
-    	$file = pathinfo($url);
-    	$extension = $file['extension'];
-    	$dir = $file['dirname'];
-    	$name = $file['filename'];
+       if ( file_exists($url) ) {
 
-    	$outputFilePath = $dir.'/'.$name.'_'.$width.'x'.$height.'_'.$crop.'.'.$extension;
-    
-    	if (!file_exists($outputFilePath)) {
-    		$image = WideImage::load($url);
-    		$image = $image->resize($width, $height, $crop, 'any')->crop('center', 'center', $width, $height);
-    		$quality = strcmp($extension, 'png') ? 100 : 9;
-    		$image->saveToFile($outputFilePath, $quality);
-    	}
+    	    $file = pathinfo($url);
+        	$extension = $file['extension'];
+        	$dir = $file['dirname'];
+        	$name = $file['filename'];
 
-    	return $outputFilePath;
+        	$outputFilePath = $dir.'/'.$name.'_'.$width.'x'.$height.'_'.$crop.'.'.$extension;
+
+        	if (!file_exists($outputFilePath)) {
+        		$image = WideImage::load($url);
+        		$image = $image->resize($width, $height, $crop, 'any')->crop('center', 'center', $width, $height);
+        		$quality = strcmp($extension, 'png') ? 100 : 9;
+        		$image->saveToFile($outputFilePath, $quality);
+        	}
+
+        	return $outputFilePath;
+        }
+    }
+
+    // try if image exists
+    public function hasImage($path) {
+        return file_exists($path);
+    }
+
+    //generate lorem
+    public function lorem($width = 100, $height = 100) {
+        return $this->lorem.$width.'/'.$height;
     }
 }

@@ -48,5 +48,10 @@ On view (app/View/\*/*.ctp), you can use ImageCutter Helper according next lines
 <img src="<?=$this->ImageCutter->url('PATH_2', 155, 233, 'inside')?>">
 <img src="<?=$this->ImageCutter->url('PATH_3', 112, 333, 'fill')?>">
 
+// Now lorem is supported
+<img src="<?=$this->ImageCutter->lorem(100, 400)?>">
+
+// Test if image path exists, return true if image exists, else return false.
+<img src="<?=$this->ImageCutter->hasImage('PATH_1')?>">
 
 ```
